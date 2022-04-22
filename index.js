@@ -1,10 +1,12 @@
 const express = require('express');
 const route = require('./routes/auth');
-const cors = require('cors')
+const cors = require('cors');
+const { conectarDB } = require('./db/config');
 require('dotenv').config();
 // levantamos el servidor 
 const app = express();
-
+// conectar la bd 
+conectarDB();
  app.use(express.static('public'));
 // usar cors
 app.use(cors());
