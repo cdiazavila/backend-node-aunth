@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
 exports.crearUsuario = async (req, res) => {
     const { name, email, password } = req.body;
-    console.log(name, email, password)
 
     try {
         // verificamos el email que no sea igual a uno existente 
@@ -30,6 +29,7 @@ exports.crearUsuario = async (req, res) => {
             ok: true,
             uid: dbUser.id,
             name,
+            email,
             token
         })
     } catch (error) {
@@ -77,6 +77,7 @@ exports.login = async (req, res) => {
             ok:true,
             uid:dbUser.id,
             name:dbUser.name,
+            email:dbUser.email,
             token
         })
     } catch (error) {
@@ -93,15 +94,19 @@ exports.login = async (req, res) => {
 // validar Json Token 
 
 exports.validarToken = async(req, res) => {
-  const {uid,name}=req;
+  const {uid}=req;
+  // leer la base de datos 
+  const dbUser =await Usuario.findById(uid);
+  
 
   // generar el JWT JsonToken
-  const token = await generarJWT(uid, name)
+  const token = await generarJWT(uid, dbUser.name)
     res.json({
         ok: true,
         msg: 'Renew',
         uid,
-        name,
+        name:dbUser.name,
+        email:dbUser.email,
         token
         
 
